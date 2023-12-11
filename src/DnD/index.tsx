@@ -15,16 +15,16 @@ const DnDContext = createContext<DnDContext>({});
 const Container: FC<
     PropsWithChildren<
         HTMLAttributes<HTMLUListElement> & {
-        isDraggable?: boolean;
+        draggable?: boolean;
         onDragAndDrop: DragAndDropHandler;
     }
     >
-> = ({ children, isDraggable = true, onDragAndDrop, ...rest }) => {
+> = ({ children, draggable = true, onDragAndDrop, ...rest }) => {
     const refContainer = useRef<HTMLUListElement>(null);
     let scrollInterval: number | null = null;
 
     //드래그시작
-    const handlePointerDown = (e: PointerEvent<HTMLLIElement>, index: number) => {
+    const onPointerDown = (e: PointerEvent<HTMLLIElement>, index: number) => {
         const container = refContainer.current;
         if (container === null || e.buttons !== 1) return;
         const items = [...container.childNodes] as HTMLElement[];
@@ -128,7 +128,7 @@ const Container: FC<
         };
     };
     return (
-        <DnDContext.Provider value={isDraggable ? { handlePointerDown } : {}}>
+        <DnDContext.Provider value={draggable ? { onPointerDown } : {}}>
             <ul ref={refContainer} {...rest}>
                 {children}
             </ul>
@@ -143,11 +143,11 @@ const Item: FC<
     }
     >
 > = ({ children, ...rest }) => {
-    const { handlePointerDown } = useContext(DnDContext);
+    const { onPointerDown } = useContext(DnDContext);
     return (
         <li
             onPointerDown={
-                handlePointerDown ? (e) => handlePointerDown(e, rest.index) : undefined
+                onPointerDown ? (e) => onPointerDown(e, rest.index) : undefined
             }
             {...rest}
         >
