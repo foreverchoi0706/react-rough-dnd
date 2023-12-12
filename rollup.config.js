@@ -29,10 +29,12 @@ export default [
         tslib: path.resolve(__dirname, "node_modules", "tslib", "tslib.es6.js"),
       }),
     ],
+    external: ["react", "react-dom"],
   },
   {
     input: "dist/esm/types/index.d.ts",
     output: [{ file: "dist/index.d.ts", format: "esm" }],
     plugins: [dts.default()],
+    external: ["react", "react-dom"],
   },
 ];

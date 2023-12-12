@@ -1,22 +1,19 @@
-import React,{
+import React, {
     FC,
     PropsWithChildren,
     HTMLAttributes,
     useRef,
-    createContext,
-    useContext,
     PointerEvent,
+    Children,
 } from "react";
 
 const SCROLL_SPEED = 7;
-
-const DnDContext = createContext<DnDContext>({});
 
 const Container: FC<
     PropsWithChildren<
         HTMLAttributes<HTMLUListElement> & {
         draggable?: boolean;
-        onDragAndDrop: DragAndDropHandler;
+        onDragAndDrop: (dragIndex: number, dropIndex: number) => void;
     }
     >
 > = ({ children, draggable = true, onDragAndDrop, ...rest }) => {
@@ -25,6 +22,7 @@ const Container: FC<
 
     //드래그시작
     const onPointerDown = (e: PointerEvent<HTMLLIElement>, index: number) => {
+        if(!draggable) return;
         const container = refContainer.current;
         if (container === null || e.buttons !== 1) return;
         const items = [...container.childNodes] as HTMLElement[];
@@ -128,34 +126,12 @@ const Container: FC<
         };
     };
     return (
-        <DnDContext.Provider value={draggable ? { onPointerDown } : {}}>
-            <ul ref={refContainer} {...rest}>
-                {children}
-            </ul>
-        </DnDContext.Provider>
+        <ul ref={refContainer} {...rest}>
+            {Children.map(children,(child, index) => <li onPointerDown={(e)=>onPointerDown(e,index)}>{child}</li>)}
+        </ul>
     );
 };
 
-const Item: FC<
-    PropsWithChildren<
-        Omit<HTMLAttributes<HTMLLIElement>, "onPointerDown"> & {
-        index: number;
-    }
-    >
-> = ({ children, ...rest }) => {
-    const { onPointerDown } = useContext(DnDContext);
-    return (
-        <li
-            onPointerDown={
-                onPointerDown ? (e) => onPointerDown(e, rest.index) : undefined
-            }
-            {...rest}
-        >
-            {children}
-        </li>
-    );
+export default  {
+    Container,
 };
-
-export default Object.assign(Container, {
-    Item
-});
