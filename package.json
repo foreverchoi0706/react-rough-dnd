@@ -1,6 +1,6 @@
 {
   "name": "react-rough-dnd",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "react-rough-dnd",
   "main": "dist/cjs/index.js",
   "scripts": {
