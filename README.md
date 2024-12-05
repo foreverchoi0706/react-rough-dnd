@@ -2,6 +2,8 @@
 
 The simple and easy react drag and drop library
 
+https://www.npmjs.com/package/react-rough-dnd
+
 ## Install
 ```shell
 npm install react-rough-dnd
